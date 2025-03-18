@@ -1,9 +1,15 @@
 import { Router } from "express";
-import { createUser } from "../controllers/userController";
-import { registerValidation } from "../middleware/validators/userValidation";
+import { authUser, createUser, getUserProfile } from "../controllers/userController";
+import {
+  loginValidation,
+  registerValidation,
+} from "../middleware/validators/userValidation";
+import { protect } from "../middleware/authMiddleware";
 
 const userRoute = Router();
 
 userRoute.post("/", registerValidation, createUser);
+userRoute.post("/auth", loginValidation, authUser);
+userRoute.get("/profile", protect, getUserProfile)
 
 export default userRoute;

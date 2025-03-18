@@ -9,6 +9,7 @@ export interface Address {
 }
 
 export interface User extends Document {
+  _id: string;
   profileImage?: string;
   firstName: string;
   lastName: string;
@@ -21,5 +22,5 @@ export interface User extends Document {
   password: string;
   refreshToken?: string | null;
   omitFields(fields: string[]): any;
-  matchPassword(password: string) : any;
+  matchPassword: (password: string) => Promise<boolean>;
 }
