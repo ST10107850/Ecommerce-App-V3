@@ -4,6 +4,7 @@ import Users from "../models/userModel";
 import { CREATED, OK, UNAUTHORIZED } from "../constants/http.codes";
 import { Request, Response } from "express";
 import HttpError from "../utils/HttpError";
+import { clearAuthCookies } from "../utils/userCookies";
 interface AuthenticatedRequest extends Request {
   user?: { _id: string };
 }
@@ -31,20 +32,21 @@ export const authUser = expressAsyncHandler(async (req, res) => {
     .json({ success: true, status: "User successfully logged in", data: data });
 });
 
-export const getUserProfile = expressAsyncHandler(async (req: AuthenticatedRequest, res: Response)  => {
+export const getUserProfile = expressAsyncHandler(
+  async (req: AuthenticatedRequest, res: Response) => {
+    if (!req.user) {
+      throw new HttpError("User not authenticated", UNAUTHORIZED);
+    }
 
-  if (!req.user) {
-    throw new HttpError("User not authenticated", UNAUTHORIZED);
+    const user = await getProfiles(req.user._id);
+
+    const data = new Users(user).omitFields(["password", "refreshToken"]);
+
+    res.status(OK).json({ success: true, data: data });
   }
+);
 
-  const user = await getProfiles(req.user._id);
-
-  const data = new Users(user).omitFields(["password", "refreshToken"]);
-
-  res.status(OK).json({ success: true, data: data });
+export const logout = expressAsyncHandler(async (req, res) => {
+  clearAuthCookies(res);
+  res.status(OK).json({ success: true, message: "Logout successfully....." });
 });
-
-
-export const logout = expressAsyncHandler(async(req, es)=>{
-  
-})
