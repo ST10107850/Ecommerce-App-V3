@@ -1,7 +1,7 @@
-import { Document } from "mongoose";
+import { Document, Types } from "mongoose";
 
-export interface Category extends Document{
-    userId: string;
+export interface categoryTypes extends Document{
+    userId: Types.ObjectId;
     categoryName: string;
-    imageUri: string;
+    ImageUri: string;
 }
