@@ -1,6 +1,6 @@
 import expressAsyncHandler from "express-async-handler";
 import HttpError from "../utils/HttpError";
-import { UNAUTHORIZED } from "../constants/http.codes";
+import { FORBIDDEN, UNAUTHORIZED } from "../constants/http.codes";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { JWT_SECRET } from "../constants/env.const";
 import Users from "../models/userModel";
@@ -33,3 +33,17 @@ export const protect = expressAsyncHandler(
     next();
   }
 );
+
+export const roleMiddleware = (allowedRoles: string[]) => {
+  return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+    if (!req.user) {;
+      throw new HttpError("Unauthorized: No user logged in", UNAUTHORIZED);
+    }
+
+    const { role } = req.user;
+    if (!allowedRoles.includes(role)) {
+      throw new HttpError("Access Denied: Insufficient permission", FORBIDDEN);
+    }
+    next();
+  };
+};
