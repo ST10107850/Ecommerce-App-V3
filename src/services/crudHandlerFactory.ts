@@ -1,6 +1,6 @@
 import expressAsyncHandler from "express-async-handler";
 import HttpError from "../utils/HttpError";
-import { NOT_FOUND, OK } from "../constants/http.codes";
+import { CONFLICT, NOT_FOUND, OK } from "../constants/http.codes";
 import { NextFunction, Request, Response } from "express";
 
 interface AuthenticatedRequest extends Request {
@@ -44,8 +44,21 @@ export const deleteOneDoc = (Model: any) =>
     res.status(OK).json({ message: "Document deleted successfully" });
   });
 
-export const updateDoc = (Model: any) =>
+export const updateDoc = (Model: any, columnName: string = "") =>
   expressAsyncHandler(async (req, res, next) => {
+    const columnValue = req.body[columnName];
+
+    if (columnValue) {
+      const existingColumn = await Model.findOne({
+        [columnName]: columnValue,
+        _id: { $ne: req.params.id },
+      });
+
+      if (existingColumn) {
+        throw new HttpError(`That ${columnName} already exists`, CONFLICT);
+      }
+    }
+
     const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,

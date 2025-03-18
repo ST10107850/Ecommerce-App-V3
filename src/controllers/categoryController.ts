@@ -3,6 +3,12 @@ import { createCategoryService } from "../services/categoryService";
 import { CREATED, UNAUTHORIZED } from "../constants/http.codes";
 import { Request, Response } from "express";
 import HttpError from "../utils/HttpError";
+import {
+  deleteOneDoc,
+  getAllDoc,
+  updateDoc,
+} from "../services/crudHandlerFactory";
+import Category from "../models/categoryModel";
 
 interface AuthenticatedRequest extends Request {
   user?: { _id: string };
@@ -15,10 +21,8 @@ export const createCategory = expressAsyncHandler(
     }
 
     const userId = req.user._id;
-    
 
     console.log("User Id: ", userId);
-    
 
     const category = await createCategoryService(req.body, userId);
 
@@ -29,3 +33,9 @@ export const createCategory = expressAsyncHandler(
     });
   }
 );
+
+export const updateCategory = updateDoc(Category, "categoryName");
+
+export const getAllCategory = getAllDoc(Category);
+
+export const deleteCategory = deleteOneDoc(Category);
