@@ -6,7 +6,12 @@ import {
 import { Request, Response } from "express";
 import { OK, CREATED, UNAUTHORIZED } from "../constants/http.codes";
 import HttpError from "../utils/HttpError";
-import { getAllDoc } from "../services/crudHandlerFactory";
+import {
+  deleteOneDoc,
+  getAllDoc,
+  getOneDoc,
+  updateDoc,
+} from "../services/crudHandlerFactory";
 import Product from "../models/productModel";
 
 interface AuthenticatedRequest extends Request {
@@ -36,3 +41,9 @@ export const getCategoryProduct = expressAsyncHandler(async (req, res) => {
 });
 
 export const getAllProduct = getAllDoc(Product);
+
+export const updateProduct = updateDoc(Product);
+
+export const getProductDetails = getOneDoc(Product);
+
+export const deleteProduct = deleteOneDoc(Product);
