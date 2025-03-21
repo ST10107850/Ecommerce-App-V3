@@ -8,8 +8,8 @@ import { OK, CREATED, UNAUTHORIZED } from "../constants/http.codes";
 import HttpError from "../utils/HttpError";
 import {
   deleteOneDoc,
-  getAllDoc,
   getOneDoc,
+  getPagnation,
   updateDoc,
 } from "../services/crudHandlerFactory";
 import Product from "../models/productModel";
@@ -40,7 +40,7 @@ export const getCategoryProduct = expressAsyncHandler(async (req, res) => {
     .json({ success: true, message: "Product found", data: products });
 });
 
-export const getAllProduct = getAllDoc(Product);
+export const getAllProduct = getPagnation(Product);
 
 export const updateProduct = updateDoc(Product);
 

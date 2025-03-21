@@ -21,6 +21,24 @@ export const getOneDoc = (Model: any) =>
     });
   });
 
+export const getPagnation = (Model: any) =>
+  expressAsyncHandler(async (req, res, next) => {
+    const currentPage = Number(req.query.currentPage) || 1;
+    const limit = Number(req.query.limit) || 10;
+
+    const skip = (currentPage - 1) * limit;
+
+    const doc = await Model.find({}).skip(skip).limit(limit);
+    if (!doc) {
+      return next(new HttpError("No documents found", NOT_FOUND));
+    }
+    res.status(OK).json({
+      success: true,
+      data: doc,
+    });
+  });
+
+
 export const getAllDoc = (Model: any) =>
   expressAsyncHandler(async (req, res, next) => {
     const doc = await Model.find({})
