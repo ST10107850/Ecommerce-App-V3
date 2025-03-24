@@ -8,6 +8,7 @@ import { clearAuthCookies } from "../utils/userCookies";
 interface AuthenticatedRequest extends Request {
   user?: { _id: string };
 }
+
 export const createUser = expressAsyncHandler(async (req, res) => {
   const user = await registerUser(req.body);
 
