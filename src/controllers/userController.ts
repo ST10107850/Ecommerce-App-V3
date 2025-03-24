@@ -9,7 +9,7 @@ interface AuthenticatedRequest extends Request {
   user?: { _id: string };
 }
 
-export const createUser = expressAsyncHandler(async (req, res) => {
+export const createUser = expressAsyncHandler(async (req:AuthenticatedRequest, res:Response) => {
   const user = await registerUser(req.body);
 
   const data = new Users(user).omitFields(["password", "refreshToken"]);
@@ -21,7 +21,7 @@ export const createUser = expressAsyncHandler(async (req, res) => {
   });
 });
 
-export const authUser = expressAsyncHandler(async (req, res) => {
+export const authUser = expressAsyncHandler(async (req:AuthenticatedRequest, res: Response) => {
   const { user } = await loginUser(req.body, res);
 
   const data = new Users(user).omitFields(["password", "refreshToken"]);
@@ -47,7 +47,7 @@ export const getUserProfile = expressAsyncHandler(
   }
 );
 
-export const logout = expressAsyncHandler(async (req, res) => {
+export const logout = expressAsyncHandler(async (req: AuthenticatedRequest, res:Response) => {
   clearAuthCookies(res);
   res.status(OK).json({ success: true, message: "Logout successfully....." });
 });

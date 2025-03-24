@@ -19,7 +19,7 @@ export const cartValidation = expressAsyncHandler(
     }
 
     items = items.map((item: itemsTypes) => ({
-      product: item.productId || item.product,
+      product: item.product,
       quantity: item.quantity,
       color: item.color || null,
       size: item.size || null,

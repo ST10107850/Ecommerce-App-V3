@@ -1,8 +1,8 @@
-import { Document, ObjectId, Schema } from "mongoose";
+import { Document, ObjectId } from "mongoose";
 import Cart from "../models/cartModel";
 import HttpError from "../utils/HttpError";
 import { NOT_FOUND } from "../constants/http.codes";
-import { itemsTypes } from "../types/cartTypes";
+import { CartItemWithId, itemsTypes } from "../types/cartTypes";
 import { cartTypes } from "../types/cartTypes";
 
 export const createCartService = async (
@@ -29,8 +29,8 @@ export const createCartService = async (
     items.forEach(({ product, quantity, color, size }) => {
       if (!cart) return;
 
-      const itemIndex = cart.items.findIndex((item) =>
-        item.product?.equals(product)
+      const itemIndex = cart.items.findIndex(
+        (item) => item.product.toString() === product.toString()
       );
 
       if (itemIndex > -1) {
@@ -46,7 +46,7 @@ export const createCartService = async (
 
 export const deleteCartItemService = async (
   userId: ObjectId,
-  itemId: ObjectId
+  itemId: string
 ) => {
   if (!userId) {
     throw new HttpError("User not found", NOT_FOUND);
@@ -59,7 +59,7 @@ export const deleteCartItemService = async (
   }
 
   const itemIndex = cart.items.findIndex(
-    (item) => item._id.toString() === itemId
+    (item) => (item as CartItemWithId)._id.toString() === itemId.toString()
   );
 
   if (itemIndex === -1) {
