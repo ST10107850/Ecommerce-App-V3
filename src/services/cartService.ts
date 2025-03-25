@@ -59,7 +59,7 @@ export const deleteCartItemService = async (
   }
 
   const itemIndex = cart.items.findIndex(
-    (item) => (item as CartItemWithId)._id.toString() === itemId.toString()
+    (item) => (item as (CartItemWithId))._id.toString() === itemId.toString()
   );
 
   if (itemIndex === -1) {

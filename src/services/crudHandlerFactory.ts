@@ -92,25 +92,30 @@ export const updateDoc = (Model: any, columnName: string = "") =>
     });
   });
 
-export const getUserDoc = (Model: any, populateFields = "") =>
-  expressAsyncHandler(
-    async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-      if (!req.user || !req.user._id) {
-        return next(new HttpError("User not found", NOT_FOUND));
+  export const getUserDoc = (Model: any, populateFields: any = "") =>
+    expressAsyncHandler(
+      async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+        if (!req.user || !req.user._id) {
+          return next(new HttpError("User not found", NOT_FOUND));
+        }
+  
+        const queryCondition = Model.schema.paths.user
+          ? { user: req.user._id }
+          : { userId: req.user._id };
+  
+        let query = Model.find(queryCondition).sort({ createdAt: -1 });
+  
+        if (populateFields) {
+          if (typeof populateFields === "string") {
+            query = query.populate(populateFields);
+          } else if (typeof populateFields === "object") {
+            query = query.populate(populateFields);
+          }
+        }
+  
+        const doc = await query.exec();
+  
+        res.status(200).json(doc);
       }
-
-      const queryCondition = Model.schema.paths.user
-        ? { user: req.user._id }
-        : { userId: req.user._id };
-
-      let query = Model.find(queryCondition).sort({ createdAt: -1 });
-
-      if (populateFields) {
-        query = query.populate(populateFields);
-      }
-
-      const doc = await query;
-
-      res.status(200).json(doc);
-    }
-  );
+    );
+  

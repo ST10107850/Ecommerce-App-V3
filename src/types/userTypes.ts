@@ -1,11 +1,11 @@
 import mongoose, { Document } from "mongoose";
 
 export interface Address {
-  id: mongoose.Types.ObjectId;
+  _id: mongoose.Types.ObjectId;
   street: string;
-  town: string;
   city: string;
-  postalCode: number;
+  state: string;
+  zipCode: string;
 }
 
 export interface User extends Document {

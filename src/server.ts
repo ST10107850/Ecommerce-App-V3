@@ -7,6 +7,7 @@ import userRoute from "./routes/userRoute";
 import categoryRoute from "./routes/categoryRoute";
 import productRoute from "./routes/productRoute";
 import cartRoute from "./routes/cartRoute";
+import orderRoute from "./routes/orderRoute";
 
 const app = express();
 app.use(cookieParser());
@@ -17,6 +18,7 @@ app.use("/api/users", userRoute);
 app.use("/api/category", categoryRoute);
 app.use("/api/product", productRoute);
 app.use("/api/cart", cartRoute);
+app.use('/api/orders', orderRoute)
 
 app.use(notFound);
 app.use(errorHandle);

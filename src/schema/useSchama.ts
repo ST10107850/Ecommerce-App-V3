@@ -4,10 +4,10 @@ export const emailSchema = z.string().email("Invalid email");
 export const passwordSchema = z
   .string()
   .min(6, "Password must be at least 6 characters long");
-export const firstName = z
+export const firstNameSchema = z
   .string()
   .min(2, "First name must be at least 2 characters long");
-export const lastName = z
+export const lastNameSchema = z
   .string()
   .min(2, "Last name must be at least 2 characters long");
 export const streetSchema = z
@@ -37,6 +37,9 @@ export const loginSchema = z.object({
 
 export const registerSchema = loginSchema
   .extend({
+    //You were not passing the lastName and firstName in this schema
+    firstName: firstNameSchema,
+    lastName: lastNameSchema,
     confirmPassword: passwordSchema,
     role: z.enum(["admin", "customer"]).default("customer"),
     phone: z.number().optional(),
@@ -48,3 +51,23 @@ export const registerSchema = loginSchema
     message: "Passwords do not match",
     path: ["confirmPassword"],
   });
+
+export const updateUserSchema = z.object({
+  email: emailSchema.optional(),
+  password: passwordSchema.optional(),
+  firstName: z.string().min(2).optional(),
+  lastName: z.string().min(2).optional(),
+  phone: z.number().optional(),
+  idNumber: z.number().optional(),
+  address: z
+    .array(
+      z.object({
+        street: z.string().optional(),
+        town: z.string().optional(),
+        city: z.string().optional(),
+        postalCode: z.number().optional(),
+      })
+    )
+    .optional(),
+  statu: z.enum(["active", "inactive"]).optional(),
+});
