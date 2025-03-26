@@ -3,11 +3,14 @@ import {
   authUser,
   createUser,
   deleteAddress,
+  forgetPassword,
   getCustomerUsers,
   getUserProfile,
   logout,
+  resetPasssword,
   updatePassword,
   updateUserProfile,
+  verifyOTP,
 } from "../controllers/userController";
 import {
   loginValidation,
@@ -31,4 +34,8 @@ userRoute.delete(
   roleMiddleware(["customer"]),
   deleteAddress
 );
+
+userRoute.post("/verify-email", verifyOTP);
+userRoute.post("/forget-password", forgetPassword);
+userRoute.post("/reset-password", resetPasssword);
 export default userRoute;

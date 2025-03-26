@@ -10,10 +10,12 @@ const userSchema = new Schema<User>(
     firstName: {
       type: String,
       required: true,
+      trim: true,
     },
     lastName: {
       type: String,
       required: true,
+      trim: true,
     },
     email: {
       type: String,
@@ -41,18 +43,22 @@ const userSchema = new Schema<User>(
         street: {
           type: String,
           required: true,
+          trim: true,
         },
         town: {
           type: String,
           required: true,
+          trim: true,
         },
         city: {
           type: String,
           required: true,
+          trim: true,
         },
         postalCode: {
           type: Number,
           required: true,
+          trim: true,
         },
       },
     ],
@@ -72,6 +78,10 @@ const userSchema = new Schema<User>(
       type: String,
       required: true,
     },
+    isVerified: { type: Boolean, required: true, default: false },
+    otp: { type: String },
+    otpExpires: { type: Date },
+
     refreshToken: {
       type: String,
       default: null,

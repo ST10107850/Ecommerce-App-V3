@@ -20,7 +20,10 @@ export interface User extends Document {
   role: "admin" | "customer";
   status: "active" | "inactive";
   password: string;
+  isVerified: boolean;
   refreshToken?: string | null;
+  otp: string | null;
+  otpExpires: Date | null;
   omitFields(fields: string[]): any;
   matchPassword: (password: string) => Promise<boolean>;
 }

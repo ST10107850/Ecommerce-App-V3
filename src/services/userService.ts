@@ -13,6 +13,9 @@ import HttpError from "../utils/HttpError";
 import { Response } from "express";
 import mongoose from "mongoose";
 import { Request } from "express";
+import { generateOTP } from "../utils/generateOTP";
+import { sendOTPEmail } from "../utils/sendOTPEmail ";
+import bcrypt from "bcrypt";
 
 export const registerUser = async (userData: User) => {
   const {
@@ -34,6 +37,9 @@ export const registerUser = async (userData: User) => {
     throw new HttpError("User already exists", CONFLICT);
   }
 
+  const otp = generateOTP();
+  const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
+
   const newUser = await Users.create({
     firstName,
     lastName,
@@ -43,8 +49,12 @@ export const registerUser = async (userData: User) => {
     role,
     password,
     profileImage,
+    otp,
+    otpExpires,
+    isVerified: false,
   });
 
+  await sendOTPEmail(email, otp);
   return newUser;
 };
 
@@ -52,6 +62,14 @@ export const loginUser = async (userData: User, res: Response) => {
   const { email, password } = userData;
 
   const user = await Users.findOne({ email });
+
+  if (!user) {
+    throw new HttpError("Invalid email or password", UNAUTHORIZED);
+  }
+
+  if (!user.isVerified) {
+    throw new HttpError("Please verify your email first", BAD_REQUEST);
+  }
 
   if (!user || !(await user.matchPassword(password))) {
     throw new HttpError("Invalid email or password", UNAUTHORIZED);
@@ -220,4 +238,53 @@ export const deleteAddressService = async (
   await user.save();
 
   return { message: "Address deleted successfully" };
+};
+
+export const forgetPasswordService = async (email: string) => {
+  const user = await Users.findOne({ email: email.toString() });
+
+  if (!user) {
+    throw new HttpError("User not found", NOT_FOUND);
+  }
+
+  const otp = generateOTP();
+  const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
+
+  user.otp = otp;
+  user.otpExpires = otpExpires;
+  await user.save();
+
+  await sendOTPEmail(user.email, otp);
+
+  return user;
+};
+
+export const resetPassswordService = async (
+  email: string,
+  newPassword: string,
+  otp: string
+) => {
+  const user = await Users.findOne({ email: email.toLowerCase() });
+
+  if (!user) {
+    throw new HttpError("User not found", NOT_FOUND);
+  }
+
+  if (!user.otp || user.otp !== otp ) {
+    throw new HttpError("Invalid or expired OTP", BAD_REQUEST);
+  }
+
+
+  if (!user.isVerified ) {
+    throw new HttpError("Please verify your email first", BAD_REQUEST);
+  }
+
+  user.set("password", newPassword, { omitUndefined: true });
+
+  user.otp = null;
+  user.otpExpires = null;
+
+  await user.save();
+
+  return user;
 };

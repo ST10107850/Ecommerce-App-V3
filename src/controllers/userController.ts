@@ -1,18 +1,21 @@
 import expressAsyncHandler from "express-async-handler";
 import {
   deleteAddressService,
+  forgetPasswordService,
   getProfiles,
   loginUser,
   registerUser,
+  resetPassswordService,
   updatePasswordServices,
   updateProfilesService,
 } from "../services/userService";
 import Users from "../models/userModel";
-import { CREATED, OK, UNAUTHORIZED } from "../constants/http.codes";
-import { Request, Response } from "express";
+import { CREATED, NOT_FOUND, OK, UNAUTHORIZED } from "../constants/http.codes";
+import { NextFunction, Request, Response } from "express";
 import HttpError from "../utils/HttpError";
 import { clearAuthCookies } from "../utils/userCookies";
-import { User } from "../types/userTypes";
+import { verifyOPTService } from "../services/verifyOPTService";
+
 interface AuthenticatedRequest extends Request {
   user?: { _id: string };
 }
@@ -121,5 +124,39 @@ export const deleteAddress = expressAsyncHandler(
 
     const addresses = await deleteAddressService(req.user._id, addressId);
     res.status(OK).json(addresses);
+  }
+);
+
+export const verifyOTP = expressAsyncHandler(
+  async (req: AuthenticatedRequest, res: Response) => {
+    const { email, otp } = req.body;
+
+    const user = await verifyOPTService(email, otp);
+
+    const data = new Users(user).omitFields(["password", "refreshToken"]);
+
+    res.status(OK).json({ message: "Email verified successfully", data: data });
+  }
+);
+
+export const forgetPassword = expressAsyncHandler(
+  async (req: AuthenticatedRequest, res: Response) => {
+    const { email } = req.body;
+
+    await forgetPasswordService(email);
+
+    res
+      .status(OK)
+      .json({ message: "OTP sent to your email. Please check your inbox." });
+  }
+);
+
+export const resetPasssword = expressAsyncHandler(
+  async (req: AuthenticatedRequest, res: Response) => {
+    const {email, newPassword, otp} =req.body;
+
+    await resetPassswordService(email, newPassword, otp);
+
+    res.status(OK).json({message: "Password reset successfully." })
   }
 );

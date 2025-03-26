@@ -40,6 +40,8 @@ export const getCategoryProduct = expressAsyncHandler(async (req, res) => {
     .json({ success: true, message: "Product found", data: products });
 });
 
+
+
 export const getAllProduct = getPagnation(Product);
 
 export const updateProduct = updateDoc(Product);
