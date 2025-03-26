@@ -23,17 +23,27 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/api/users", userRoute);
-app.use("/api/category", categoryRoute);
-app.use("/api/product", productRoute);
-app.use("/api/cart", cartRoute);
-app.use("/api/orders", orderRoute);
+// 🔹 Connect to DB Before Registering Routes
+dbConnection()
+  .then(() => {
+    console.log("✅ DB Connection Established. Registering Routes...");
 
-app.use(notFound);
-app.use(errorHandle);
-app.listen(PORT, () => {
-  console.log("App is running on port: ", PORT);
-  dbConnection();
-});
+    app.use("/api/users", userRoute);
+    app.use("/api/category", categoryRoute);
+    app.use("/api/product", productRoute);
+    app.use("/api/cart", cartRoute);
+    app.use("/api/orders", orderRoute);
+
+    app.use(notFound);
+    app.use(errorHandle);
+
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("❌ Failed to connect to database:", err);
+    process.exit(1);
+  });
 
 export default app;
