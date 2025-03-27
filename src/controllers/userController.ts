@@ -38,8 +38,6 @@ export const authUser = expressAsyncHandler(
 
     const data = new Users(user).omitFields(["password", "refreshToken"]);
 
-    console.log("Daata: ", data);
-
     res.status(OK).json({
       success: true,
       status: "User successfully logged in",
