@@ -27,7 +27,7 @@ const app = express();
 // app.use(errorHandle);
 const PORT = process.env.PORT || 5000
 
-app.get("/", (req, res)=>{
+app.get("/user", (req, res)=>{
   res.send({message: "Hello world"})
 })
 
