@@ -1,18 +1,20 @@
 {
   "compilerOptions": {
-    "outDir": "./dist",                               /* Correct output folder for compiled JS */
-    "target": "es2016",                               /* Set the target ECMAScript version */
-    "module": "commonjs",                             /* Use CommonJS for module resolution */
-    "rootDir": "./src",                           /* Root folder for your source code */
-    "moduleResolution": "node",                       /* Correct module resolution method for Node.js */
-    "esModuleInterop": true,                          /* Ensures compatibility with CommonJS modules */
-    "forceConsistentCasingInFileNames": true,         /* Enforces consistent casing in filenames */
-    "skipLibCheck": true,                             /* Skip type checking for .d.ts files (improves build speed) */
-    "strict": true,                                   /* Enable strict type checking */
-    "resolveJsonModule": true,                        /* Allow importing .json files */
-    "noUnusedLocals": true,                           /* Warn about unused local variables */
-    "noUnusedParameters": true,                       /* Warn about unused parameters in functions */
-    "sourceMap": true,                                /* Generate source maps for debugging */
-    "removeComments": true                            /* Remove comments in compiled code */
-  }
+    "outDir": "./api" /* Correct output folder for compiled JS */,
+    "target": "es2016" /* Set the target ECMAScript version */,
+    "module": "commonjs" /* Use CommonJS for module resolution */,
+    "rootDir": "./src" /* Root folder for your source code */,
+    "moduleResolution": "node" /* Correct module resolution method for Node.js */,
+    "esModuleInterop": true /* Ensures compatibility with CommonJS modules */,
+    "forceConsistentCasingInFileNames": true /* Enforces consistent casing in filenames */,
+    "skipLibCheck": true /* Skip type checking for .d.ts files (improves build speed) */,
+    "strict": true /* Enable strict type checking */,
+    "resolveJsonModule": true /* Allow importing .json files */,
+    "noUnusedLocals": true /* Warn about unused local variables */,
+    "noUnusedParameters": true /* Warn about unused parameters in functions */,
+    "sourceMap": true /* Generate source maps for debugging */,
+    "removeComments": true /* Remove comments in compiled code */
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "api"]
 }
