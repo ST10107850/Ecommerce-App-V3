@@ -8,6 +8,9 @@ import categoryRoute from "./routes/categoryRoute";
 import productRoute from "./routes/productRoute";
 import cartRoute from "./routes/cartRoute";
 import orderRoute from "./routes/orderRoute";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
 // app.use(cookieParser());
@@ -22,6 +25,7 @@ const app = express();
 
 // app.use(notFound);
 // app.use(errorHandle);
+const PORT = process.env.PORT || 5000
 
 app.get("/", (req, res)=>{
   res.send({message: "Hello world"})
